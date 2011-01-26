@@ -20,33 +20,29 @@ class XMLPurifier
       if elem.text and elem.text.to_s[/^[\{\[][^\}\]]+[\}\]]$/] then
 
         obj = JSON.parse(elem.text)
-        method('to_' + opt[:to].to_s.to_sym).call(elem, obj)
+        method('to_' + opt[:to].to_s.to_sym).call(elem, scan_obj_to_xml(obj))
       end
     end
     
   end
 
-  def to_xml()
-    @doc.to_s
-  end
+  def to_xml() @doc.to_s end
 
   private
 
-  def to_default(elem, obj)
-    node_xml = "<%s>%s</%s>" % [elem.name, scan_obj_to_xml(obj), elem.name]
+  def to_default(elem, xml)
+    node_xml = "<%s>%s</%s>" % [elem.name, xml, elem.name]
     elem.parent.add_element Document.new(node_xml).root
     elem.parent.delete elem    
   end
   
   alias to_native to_default
 
-  def to_cdata(elem, obj)      
-    elem.text = CData.new(scan_obj_to_xml(obj))
-  end
+  def to_cdata(elem, xml) elem.text = CData.new(xml) end
 
-  def to_escaped(elem, obj)  elem.text = scan_obj_to_xml(obj)  end
+  def to_escaped(elem, xml) elem.text = xml end
 
-  def string_to_xml(x) x  end
+  def string_to_xml(x) x end
 
   def hash_to_xml(x)
     x.map do |k,v| 

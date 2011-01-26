@@ -40,9 +40,8 @@ class XMLPurifier
   
   alias to_native to_default
 
-  def to_cdata(elem, obj)
-    s = scan_obj_to_xml(obj) 
-    elem.text = CData.new(s)
+  def to_cdata(elem, obj)      
+    elem.text = CData.new(scan_obj_to_xml(obj))
   end
 
   def to_escaped(elem, obj)  elem.text = scan_obj_to_xml(obj)  end
